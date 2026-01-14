@@ -50,12 +50,33 @@ namespace WebShopApp.Controllers
 
         }
 
-      
+
 
         // GET: ProductController/Details/5
+        [AllowAnonymous]
         public ActionResult Details(int id)
         {
-            return View();
+            Product item = _productService.GetProductById(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            ProductDetailsVM product = new ProductDetailsVM()
+            {
+                Id = item.Id,
+                ProductName = item.ProductName,
+                BrandId = item.BrandId,
+                BrandName = item.Brand.BrandName,
+                CategoryId = item.CategoryId,
+                CategoryName = item.Category.CategoryName,
+                Picture = item.Picture,
+                Quantity = item.Quantity,
+                Price = item.Price,
+                Discount = item.Discount
+            };
+
+            return View(product);
         }
 
 
@@ -176,7 +197,27 @@ namespace WebShopApp.Controllers
         // GET: ProductController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            Product item = _productService.GetProductById(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            ProductDeleteVM product = new ProductDeleteVM()
+            {
+                Id = item.Id,
+                ProductName = item.ProductName,
+                BrandId = item.BrandId,
+                BrandName = item.Brand.BrandName,
+                CategoryId = item.CategoryId,
+                CategoryName = item.Category.CategoryName,
+                Picture = item.Picture,
+                Quantity = item.Quantity,
+                Price = item.Price,
+                Discount = item.Discount
+            };
+
+            return View(product);
         }
 
         // POST: ProductController/Delete/5
@@ -184,14 +225,22 @@ namespace WebShopApp.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {
-            try
+            var deleted = _productService.RemoveById(id);
+
+            if (deleted)
             {
-                return RedirectToAction(nameof(Index));
+                return this.RedirectToAction("Success");
             }
-            catch
+            else
             {
                 return View();
             }
         }
+
+        public IActionResult Success()
+        {
+            return View();
+        }
+
     }
 }
