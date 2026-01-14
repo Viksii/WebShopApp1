@@ -17,6 +17,7 @@ namespace WebShopApp.Infrastructure.Data.Domain
 
         [Required]
         public int BrandId { get; set; }
+         public virtual Brand Brand{ get; set; } = null!;
         [Required]
 
         public int CategoryId { get; set; }
